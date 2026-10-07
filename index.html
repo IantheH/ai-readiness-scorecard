@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Readiness Scorecard | Ianthe Hernandez</title>
+<meta name="description" content="A free, 12-question AI readiness scorecard for business owners. One score, no email needed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b1426;
+    --panel: #101c33;
+    --alt: #0d182c;
+    --border: #22304d;
+    --gold: #d9b25f;
+    --gold-hover: #e6c27a;
+    --text: #e8ecf4;
+    --soft: #dbe2ef;
+    --muted: #a7b3c8;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 56px 20px 40px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-weight: 700; margin: 0 0 14px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: clamp(30px, 6vw, 44px); line-height: 1.15; margin: 0 0 14px;
+  }
+  .lede { color: var(--muted); font-size: 18px; margin: 0 0 32px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px;
+  }
+  .progress-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; color: var(--muted); margin-bottom: 10px;
+    letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+  }
+  .bar { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 28px; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--gold); border-radius: 999px; transition: width .35s ease; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend {
+    font-family: 'Playfair Display', serif; font-weight: 500;
+    font-size: clamp(21px, 4vw, 26px); line-height: 1.3; padding: 0; margin-bottom: 22px;
+  }
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .opt { position: relative; }
+  .opt input {
+    position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0;
+  }
+  .opt label {
+    display: block; cursor: pointer; padding: 16px 18px; border: 1px solid var(--border);
+    border-radius: 10px; background: var(--alt); color: var(--soft);
+    transition: border-color .15s ease, background .15s ease, transform .15s ease;
+  }
+  .opt:hover label { border-color: var(--gold); transform: translateY(-1px); }
+  .opt input:checked + label { border-color: var(--gold); background: #15233f; color: #fff; box-shadow: inset 0 0 0 1px var(--gold); }
+  .opt input:focus-visible + label { outline: 2px solid #fff; outline-offset: 2px; }
+  .nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; text-align: center; font: inherit; font-weight: 700;
+    padding: 13px 26px; border-radius: 4px; cursor: pointer; text-decoration: none;
+    border: 1px solid var(--gold); transition: box-shadow .15s ease, transform .15s ease, background .15s ease, color .15s ease;
+  }
+  .btn-primary { background: var(--gold); color: var(--bg); }
+  .btn-primary:hover:not(:disabled) { background: var(--gold-hover); box-shadow: 0 0 0 2px #fff; transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--gold); }
+  .btn-outline:hover:not(:disabled) { box-shadow: 0 0 0 2px #fff; transform: translateY(-1px); }
+  .btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .hidden { display: none !important; }
+
+  .result { text-align: center; }
+  .score-ring { margin: 6px auto 8px; font-family: 'Playfair Display', serif; font-weight: 700; line-height: 1; }
+  .score-ring .num { font-size: clamp(64px, 16vw, 96px); color: var(--gold); }
+  .score-ring .of { font-size: 22px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 500; margin-left: 6px; }
+  .meter { height: 10px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 14px auto 24px; max-width: 420px; }
+  .meter > span { display: block; height: 100%; width: 0; background: var(--gold); border-radius: 999px; transition: width .9s ease; }
+  .tier { font-family: 'Playfair Display', serif; font-size: clamp(24px, 5vw, 30px); margin: 0 0 12px; }
+  .result p { color: var(--soft); max-width: 600px; margin: 0 auto 14px; }
+  .cta {
+    margin-top: 28px; padding: 26px; border: 1px solid var(--gold); border-radius: 12px;
+    background: var(--alt); text-align: left;
+  }
+  .cta h2 { font-family: 'Playfair Display', serif; font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+  .cta p { color: var(--soft); margin: 0 0 18px; max-width: none; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .fine { color: var(--muted); font-size: 14px; margin-top: 22px; text-align: center; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; padding: 8px 20px 48px; }
+  footer a { color: var(--gold); font-weight: 700; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  @media (max-width: 520px) {
+    .card { padding: 22px 18px; }
+    .btn { width: 100%; }
+    .nav .btn, .actions .btn { flex: 1 1 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="eyebrow">AI Readiness Scorecard</p>
+  <h1>How ready is your business for AI?</h1>
+  <p class="lede">Twelve quick questions. One score. No email needed.</p>
+
+  <section class="card" id="quiz" aria-live="polite">
+    <div class="progress-row"><span id="count">Question 1 of 12</span><span id="pct">0%</span></div>
+    <div class="bar" aria-hidden="true"><span id="barfill"></span></div>
+    <form id="form" novalidate>
+      <fieldset>
+        <legend id="qtext"></legend>
+        <div class="options" id="options"></div>
+      </fieldset>
+      <div class="nav">
+        <button type="button" class="btn btn-outline" id="back">Back</button>
+        <button type="submit" class="btn btn-primary" id="next" disabled>Next</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card result hidden" id="result" aria-live="polite" tabindex="-1">
+    <p class="eyebrow">Your score</p>
+    <div class="score-ring"><span class="num" id="scorenum">0</span><span class="of">out of 100</span></div>
+    <div class="meter" aria-hidden="true"><span id="meterfill"></span></div>
+    <h2 class="tier" id="tier"></h2>
+    <p id="tiertext"></p>
+    <div class="cta">
+      <h2>Want to know exactly what to fix first?</h2>
+      <p>The Comprehensive Business Growth &amp; Systems Assessment includes an AI readiness review: what you are using now, what is worth adding, and what to fix first, plus a 90-day roadmap and One-Page Blueprint.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="https://www.ianthehernandez.com/#assessment">See the Assessment</a>
+        <button type="button" class="btn btn-outline" id="retake">Retake the scorecard</button>
+      </div>
+    </div>
+    <p class="fine">This is a quick snapshot, not a full diagnosis. Your answers stay in your browser. Nothing is saved or sent.</p>
+  </section>
+</main>
+<footer>By <a href="https://www.ianthehernandez.com">Ianthe Hernandez</a></footer>
+
+<script>
+(function () {
+  // Each question has four answers, scored 0 to 3 from the first answer to the last.
+  var QUESTIONS = [
+    { q: "How are you using AI in your business today?",
+      a: ["I am not using it", "I try it now and then on my own", "A few of us use it for specific tasks", "It is built into how we regularly work"] },
+    { q: "How well are your core processes written down (sales, onboarding, delivery)?",
+      a: ["They live in my head", "Some are written, most are not", "Most are written but not always followed", "They are written, current, and followed"] },
+    { q: "Where do your leads and customer details live?",
+      a: ["Notes, texts, and my memory", "A mix of spreadsheets, email, and apps", "One system, but only some of us use it", "One system that everyone uses"] },
+    { q: "How consistently does a new lead get a follow-up?",
+      a: ["When I remember to do it", "Usually, but it depends on who is busy", "Most of the time, with some manual reminders", "Every lead, on time, without anyone chasing"] },
+    { q: "How much repetitive work (data entry, reminders, status updates) is done by hand each week?",
+      a: ["A large part of our week", "Several hours a week", "A little, and we are trimming it", "Very little, because it is automated"] },
+    { q: "How clean and current is your customer data?",
+      a: ["I do not trust it", "It is scattered and often out of date", "Mostly accurate, with some gaps", "Accurate and kept up to date"] },
+    { q: "Does your team know what AI should and should not be used for?",
+      a: ["There are no guidelines", "We have talked about it informally", "We have a few rules", "We have clear, written guidelines"] },
+    { q: "Who owns technology and AI decisions in your business?",
+      a: ["Nobody in particular", "Whoever is most interested", "I make the calls, with little time for it", "A clear owner with a plan"] },
+    { q: "How do you measure results (leads, conversions, revenue by source)?",
+      a: ["I do not track it", "I check now and then by feel", "I track a few numbers", "I review clear numbers on a regular schedule"] },
+    { q: "How well do your tools work together?",
+      a: ["We copy and paste between them", "Some are connected, most are not", "Most are connected, with a few gaps", "They share information automatically"] },
+    { q: "How do you decide which new tools or AI to adopt?",
+      a: ["I try whatever looks interesting", "I follow what others are using", "I compare a few options first", "I start from the problem and a clear goal"] },
+    { q: "How clear are you on the one or two things AI should do first in your business?",
+      a: ["I have no idea where to start", "I have a few guesses", "I have a shortlist", "I know exactly, and why"] }
+  ];
+
+  var TIERS = [
+    { max: 39, name: "Start with the foundation",
+      text: "Adding AI right now would mostly add noise. The good news is that a few fixes to how your business runs can pay off quickly, and they make every future AI step work better." },
+    { max: 69, name: "You have a start, and gaps are costing you",
+      text: "Some parts of your business are ready for AI and some will hold it back. Knowing which is which keeps you from spending money on tools that never stick." },
+    { max: 100, name: "You are in a strong position",
+      text: "You have the basics to use AI well. Your next gains come from choosing the right first moves and tying them to results you can measure." }
+  ];
+
+  var idx = 0, answers = new Array(QUESTIONS.length);
+
+  var $ = function (id) { return document.getElementById(id); };
+  var quiz = $("quiz"), result = $("result");
+
+  function render() {
+    var item = QUESTIONS[idx];
+    $("count").textContent = "Question " + (idx + 1) + " of " + QUESTIONS.length;
+    var done = Math.round((idx / QUESTIONS.length) * 100);
+    $("pct").textContent = done + "%";
+    $("barfill").style.width = done + "%";
+    $("qtext").textContent = item.q;
+    var box = $("options");
+    box.innerHTML = "";
+    item.a.forEach(function (text, i) {
+      var wrap = document.createElement("div");
+      wrap.className = "opt";
+      var input = document.createElement("input");
+      input.type = "radio"; input.name = "answer"; input.id = "opt" + i; input.value = i;
+      if (answers[idx] === i) input.checked = true;
+      input.addEventListener("change", function () {
+        answers[idx] = i;
+        $("next").disabled = false;
+      });
+      var label = document.createElement("label");
+      label.setAttribute("for", "opt" + i);
+      label.textContent = text;
+      wrap.appendChild(input); wrap.appendChild(label);
+      box.appendChild(wrap);
+    });
+    $("next").disabled = answers[idx] === undefined;
+    $("next").textContent = idx === QUESTIONS.length - 1 ? "See my score" : "Next";
+    $("back").style.visibility = idx === 0 ? "hidden" : "visible";
+  }
+
+  function showResult() {
+    var total = answers.reduce(function (s, v) { return s + v; }, 0);
+    var score = Math.round((total / (QUESTIONS.length * 3)) * 100);
+    var tier = TIERS.filter(function (t) { return score <= t.max; })[0];
+    $("scorenum").textContent = score;
+    $("tier").textContent = tier.name;
+    $("tiertext").textContent = tier.text;
+    quiz.classList.add("hidden");
+    result.classList.remove("hidden");
+    $("meterfill").style.width = "0";
+    requestAnimationFrame(function () { requestAnimationFrame(function () { $("meterfill").style.width = score + "%"; }); });
+    result.focus({ preventScroll: true });
+    result.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (answers[idx] === undefined) return;
+    if (idx < QUESTIONS.length - 1) { idx++; render(); } else { showResult(); }
+  });
+  $("back").addEventListener("click", function () { if (idx > 0) { idx--; render(); } });
+  $("retake").addEventListener("click", function () {
+    idx = 0; answers = new Array(QUESTIONS.length);
+    result.classList.add("hidden"); quiz.classList.remove("hidden");
+    render(); window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
